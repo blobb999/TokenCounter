@@ -63,8 +63,6 @@ text
    - Edit the code to change the encoding (e.g., `tiktoken.get_encoding("gpt2")`).
    - Extend file extensions in `process_files` (e.g., add `.js` for JavaScript).
 
-(Upload your own screenshots to the `screenshots/` folder.)
-
 ## Contributing
 
 Contributions are welcome! Fork the repo, make changes, and submit a pull request. Issues or feature requests? Open an issue.
