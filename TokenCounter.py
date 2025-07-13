@@ -6,13 +6,13 @@ import os
 class TokenCounterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Projekt-Token-Zähler")
+        self.root.title("Project Token Counter")
         self.root.geometry("600x400")
         
-        # Encoding-Modell (für GPT-4, anpassbar)
+        # Encoding model (for GPT-4, adjustable)
         self.encoding = tiktoken.get_encoding("cl100k_base")
         
-        # GUI-Elemente
+        # GUI elements
         self.setup_ui()
     
     def setup_ui(self):
@@ -23,31 +23,31 @@ class TokenCounterApp:
         btn_frame = ttk.Frame(frame)
         btn_frame.pack(fill=tk.X, pady=10)
         
-        ttk.Button(btn_frame, text="Einzelne Datei auswählen", command=self.select_file).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="Ordner auswählen (rekursiv)", command=self.select_folder).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="Mehrere Dateien auswählen", command=self.select_multiple_files).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="Select Single File", command=self.select_file).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="Select Folder (recursively)", command=self.select_folder).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="Select Multiple Files", command=self.select_multiple_files).pack(side=tk.LEFT, padx=5)
         
-        # Ergebnis-Textfeld
+        # Result text field
         self.result_text = scrolledtext.ScrolledText(frame, wrap=tk.WORD, height=15)
         self.result_text.pack(fill=tk.BOTH, expand=True, pady=10)
         
         # Status
-        self.status_label = ttk.Label(frame, text="Bereit")
+        self.status_label = ttk.Label(frame, text="Ready")
         self.status_label.pack(anchor=tk.W)
     
     def count_tokens_in_file(self, file_path):
-        """Zählt Tokens in einer Datei."""
+        """Counts tokens in a file."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             tokens = len(self.encoding.encode(content))
             return tokens
         except Exception as e:
-            messagebox.showerror("Fehler", f"Fehler beim Lesen von {file_path}: {str(e)}")
+            messagebox.showerror("Error", f"Error reading {file_path}: {str(e)}")
             return 0
     
     def process_files(self, paths):
-        """Verarbeitet Dateien/Ordner und zählt Tokens."""
+        """Processes files/folders and counts tokens."""
         self.result_text.delete(1.0, tk.END)
         total_tokens = 0
         file_count = 0
@@ -61,28 +61,28 @@ class TokenCounterApp:
             elif os.path.isdir(path):
                 for root, _, files in os.walk(path):
                     for file in files:
-                        if file.endswith(('.py', '.txt', '.md')):  # Anpassbar: Nur Python/Text-Dateien
+                        if file.endswith(('.py', '.txt', '.md')):  # Adjustable: Only Python/Text files
                             file_path = os.path.join(root, file)
                             tokens = self.count_tokens_in_file(file_path)
                             total_tokens += tokens
                             file_count += 1
                             self.result_text.insert(tk.END, f"{file_path}: {tokens} Tokens\n")
         
-        self.result_text.insert(tk.END, f"\nGesamt: {total_tokens} Tokens in {file_count} Dateien\n")
-        self.status_label.config(text=f"Fertig: {total_tokens} Tokens")
+        self.result_text.insert(tk.END, f"\nTotal: {total_tokens} Tokens in {file_count} Files\n")
+        self.status_label.config(text=f"Finished: {total_tokens} Tokens")
     
     def select_file(self):
-        path = filedialog.askopenfilename(title="Datei auswählen", filetypes=[("Python-Dateien", "*.py"), ("Alle Dateien", "*.*")])
+        path = filedialog.askopenfilename(title="Select File", filetypes=[("Python Files", "*.py"), ("All Files", "*.*")])
         if path:
             self.process_files([path])
     
     def select_folder(self):
-        path = filedialog.askdirectory(title="Ordner auswählen")
+        path = filedialog.askdirectory(title="Select Folder")
         if path:
             self.process_files([path])
     
     def select_multiple_files(self):
-        paths = filedialog.askopenfilenames(title="Mehrere Dateien auswählen", filetypes=[("Python-Dateien", "*.py"), ("Alle Dateien", "*.*")])
+        paths = filedialog.askopenfilenames(title="Select Multiple Files", filetypes=[("Python Files", "*.py"), ("All Files", "*.*")])
         if paths:
             self.process_files(paths)
 
